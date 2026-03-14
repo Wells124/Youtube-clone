@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Clone · static practice</title>
+    <!-- Font Awesome 6 (free) for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* RESET & GLOBAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f9f9f9;
+        }
+
+        /* ----- HEADER / NAVBAR (static) ----- */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background-color: white;
+            height: 56px;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        /* left section: menu + logo */
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .menu-icon {
+            font-size: 1.3rem;
+            color: #606060;
+            cursor: default; /* static, no interactivity */
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 1px;
+        }
+
+        .youtube-logo {
+            font-size: 1.7rem;
+            font-weight: 600;
+            letter-spacing: -0.5px;
+            color: #282828;
+        }
+
+        .youtube-logo i {
+            color: #ff0000;
+            font-size: 1.9rem;
+            margin-right: 2px;
+        }
+
+        .country-code {
+            font-size: 0.65rem;
+            font-weight: 400;
+            color: #606060;
+            align-self: flex-start;
+            margin-top: 2px;
+        }
+
+        /* middle: search bar (static) */
+        .header-middle {
+            display: flex;
+            align-items: center;
+            flex: 0 1 640px;
+            min-width: 200px;
+            max-width: 640px;
+            margin: 0 20px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            height: 40px;
+            border: 1px solid #ccc;
+            border-radius: 40px 0 0 40px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 2px #eee;
+        }
+
+        .search-input {
+            width: 100%;
+            height: 100%;
+            padding: 0 16px;
+            font-size: 1rem;
+            border: none;
+            outline: none;
+        }
+
+        .search-btn {
+            width: 64px;
+            height: 40px;
+            background-color: #f8f8f8;
+            border: 1px solid #ccc;
+            border-left: none;
+            border-radius: 0 40px 40px 0;
+            color: #303030;
+            font-size: 1.1rem;
+            cursor: default;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .voice-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f2f2f2;
+            border: none;
+            margin-left: 12px;
+            color: #303030;
+            font-size: 1.1rem;
+            cursor: default;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* right icons */
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            color: #606060;
+            font-size: 1.2rem;
+            cursor: default;
+        }
+
+        .profile-pic {
+            width: 32px;
+            height: 32px;
+            background-color: #4c6b8a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: default;
+        }
+
+        /* ----- MAIN LAYOUT: SIDEBAR + CONTENT (static) ----- */
+        .main {
+            display: flex;
+            height: calc(100vh - 56px);  /* full viewport minus header */
+            overflow-y: auto;
+        }
+
+        /* SIDEBAR (static, no hover effects) */
+        .sidebar {
+            width: 240px;
+            background-color: white;
+            overflow-y: auto;
+            padding: 12px 0 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-right: 1px solid #e5e5e5;
+            flex-shrink: 0;
+        }
+
+        .sidebar-section {
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            color: #0f0f0f;
+            font-size: 0.9rem;
+            font-weight: 400;
+            cursor: default;
+        }
+
+        .sidebar-item i {
+            width: 24px;
+            font-size: 1.1rem;
+            color: #606060;
+        }
+
+        .sidebar-item.active {
+            background-color: #f2f2f2;
+            font-weight: 500;
+        }
+
+        .sidebar-item.active i {
+            color: #ff0000;
+        }
+
+        .separator {
+            height: 1px;
+            background-color: #e5e5e5;
+            margin: 10px 12px;
+        }
+
+        .subsection-title {
+            color: #606060;
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            padding: 8px 12px 4px 12px;
+            text-transform: uppercase;
+        }
+
+        .channel-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 12px;
+            font-size: 0.9rem;
+            cursor: default;
+        }
+
+        .channel-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background-color: #b1b1b1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* footer links in sidebar */
+        .sidebar-footer {
+            padding: 16px 12px 8px;
+            font-size: 0.7rem;
+            color: #909090;
+            line-height: 1.3;
+        }
+        .footer-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .footer-links span {
+            cursor: default;
+        }
+
+        /* ----- CONTENT (VIDEO GRID) ----- */
+        .content {
+            flex: 1;
+            background-color: #f9f9f9;
+            padding: 24px 24px 32px 24px;
+            overflow-y: auto;
+        }
+
+        /* chips / categories */
+        .chip-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .chip {
+            background-color: #f2f2f2;
+            color: #0f0f0f;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid #e0e0e0;
+            cursor: default;
+            white-space: nowrap;
+        }
+
+        .chip.active {
+            background-color: #0f0f0f;
+            color: white;
+            border-color: #0f0f0f;
+        }
+
+        /* video grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px 16px;
+        }
+
+        .video-card {
+            cursor: default;
+        }
+
+        .thumbnail {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #c4c4c4;
+            border-radius: 12px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4d4d4d;
+            font-size: 0.8rem;
+            background: linear-gradient(145deg, #d0d0d0, #b0b0b0);
+            margin-bottom: 10px;
+        }
+
+        .thumbnail span {
+            background: rgba(0,0,0,0.5);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            position: absolute;
+            bottom: 6px;
+            right: 6px;
+        }
+
+        .video-info {
+            display: flex;
+            gap: 12px;
+        }
+
+        .channel-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #a0a0a0;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .video-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .video-title {
+            font-weight: 500;
+            font-size: 0.95rem;
+            line-height: 1.3;
+            margin-bottom: 5px;
+            color: #0f0f0f;
+        }
+
+        .video-channel, .video-stats {
+            font-size: 0.8rem;
+            color: #606060;
+        }
+
+        /* short "static" label for clarity */
+        .static-badge {
+            font-size: 0.6rem;
+            background: #eaeaea;
+            border-radius: 4px;
+            padding: 2px 6px;
+            margin-left: 6px;
+            color: #3f3f3f;
+            vertical-align: middle;
+        }
+
+        /* scrollbar subtle (optional) */
+        .content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .content::-webkit-scrollbar-thumb {
+            background: #aaa;
+            border-radius: 10px;
+        }
+
+        /* for smaller screens */
+        @media (max-width: 800px) {
+            .sidebar {
+                display: none;   /* hide on narrow, but it's static clone – fine */
+            }
+            .header-middle {
+                min-width: 150px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER – static youtube clone -->
+    <header class="header">
+        <div class="header-left">
+            <div class="menu-icon"><i class="fas fa-bars"></i></div>
+            <div class="logo-area">
+                <i class="fab fa-youtube" style="color:#ff0000; font-size:2rem;"></i>
+                <span class="youtube-logo">YouTube</span>
+                <span class="country-code">IN</span>
+            </div>
+        </div>
+
+        <div class="header-middle">
+            <div class="search-container">
+                <input class="search-input" type="text" placeholder="Search" value="static html css">
+                <div class="search-btn"><i class="fas fa-search"></i></div>
+            </div>
+            <div class="voice-btn"><i class="fas fa-microphone"></i></div>
+        </div>
+
+        <div class="header-right">
+            <i class="fas fa-video header-icon"></i>
+            <i class="fas fa-th header-icon"></i>
+            <i class="fas fa-bell header-icon"></i>
+            <div class="profile-pic">S</div>
+        </div>
+    </header>
+
+    <!-- MAIN + SIDEBAR + CONTENT -->
+    <div class="main">
+        <!-- SIDEBAR (static, no links) -->
+        <aside class="sidebar">
+            <div class="sidebar-section">
+                <div class="sidebar-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-compass"></i>
+                    <span>Explore</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-film"></i>
+                    <span>Shorts</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-play-circle"></i>
+                    <span>Subscriptions</span>
+                </div>
+            </div>
+
+            <div class="separator"></div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-item">
+                    <i class="fas fa-history"></i>
+                    <span>History</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-clock"></i>
+                    <span>Watch later</span>
+                </div>
+                <div class="sidebar-item">
+                    <i class="fas fa-thumbs-up"></i>
+                    <span>Liked videos</span>
+                </div>
+            </div>
+
+            <div class="separator"></div>
+
+            <div class="subsection-title">subscriptions</div>
+            <div class="channel-item">
+                <div class="channel-icon">T</div>
+                <span>Tech With Static</span>
+            </div>
+            <div class="channel-item">
+                <div class="channel-icon">C</div>
+                <span>CSS Mastery</span>
+            </div>
+            <div class="channel-item">
+                <div class="channel-icon">H</div>
+                <span>HTML all day</span>
+            </div>
+            <div class="channel-item">
+                <div class="channel-icon">G</div>
+                <span>GitHub Pages</span>
+            </div>
+
+            <div class="separator"></div>
+
+            <div class="subsection-title">more from youtube</div>
+            <div class="sidebar-item"><i class="fas fa-crown"></i><span>Premium</span></div>
+            <div class="sidebar-item"><i class="fas fa-gamepad"></i><span>Gaming</span></div>
+            <div class="sidebar-item"><i class="fas fa-wifi"></i><span>Live</span></div>
+
+            <div class="separator"></div>
+
+            <div class="sidebar-footer">
+                <div class="footer-links">
+                    <span>About</span> <span>Press</span> <span>Copyright</span>
+                    <span>Contact</span> <span>Creators</span> <span>Advertise</span>
+                    <span>Developers</span>
+                </div>
+                <div style="margin-top: 8px;">
+                    <span>Terms · Privacy · Policy & Safety</span><br>
+                    <span>© 2025 Static YouTube LLC</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENT / VIDEO GRID -->
+        <main class="content">
+            <!-- chip row -->
+            <div class="chip-bar">
+                <span class="chip active">All</span>
+                <span class="chip">Static HTML</span>
+                <span class="chip">CSS grid</span>
+                <span class="chip">Flexbox</span>
+                <span class="chip">UI clone</span>
+                <span class="chip">GitHub hosting</span>
+                <span class="chip">Practice</span>
+                <span class="chip">Frontend</span>
+            </div>
+
+            <!-- video grid (static cards) -->
+            <div class="video-grid">
+                <!-- card 1 -->
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <span>12:34</span>
+                        <i class="fas fa-play-circle" style="font-size:2rem; color:rgba(255,255,255,0.7);"></i>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar">S</div>
+                        <div class="video-details">
+                            <div class="video-title">
+                                Build YouTube Clone – static HTML/CSS only <span class="static-badge">static</span>
+                            </div>
+                            <div class="video-channel">Static School</div>
+                            <div class="video-stats">234K views · 2 days ago</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- card 2 -->
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <span>8:15</span>
+                        <i class="fas fa-code" style="font-size:2rem; color:rgba(255,255,255,0.7);"></i>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar">C</div>
+                        <div class="video-details">
+                            <div class="video-title">
+                                CSS Masterclass: perfect grid layout <span class="static-badge">static</span>
+                            </div>
+                            <div class="video-channel">CSS Pro</div>
+                            <div class="video-stats">89K views · 5 days ago</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- card 3 -->
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <span>3:45</span>
+                        <i class="fas fa-image" style="font-size:2rem; color:rgba(255,255,255,0.7);"></i>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar">F</div>
+                        <div class="video-details">
+                            <div class="video-title">
+                                Flexbox vs Grid – which one for cloning? 
+                            </div>
+                            <div class="video-channel">Frontend simplified</div>
+                            <div class="video-stats">1.2M views · 2 weeks ago</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- card 4 -->
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <span>21:09</span>
+                        <i class="fas fa-github" style="font-size:2rem; color:rgba(255,255,255,0.7);"></i>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar">G</div>
+                        <div class="video-details">
+                            <div class="video-title">
+                                Host your static site on GitHub Pages (step by step)
+                            </div>
+                            <div class="video-channel">GitHub for devs</div>
+                            <div class="video-stats">567K views · 3 months ago</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- card 5 -->
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <span>5:20</span>
+                        <i class="fas fa-paint-brush" style="font-size:2rem; color:rgba(255,255,255,0.7);"></i>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar">D</div>
+                        <div class="video-details">
+                            <div class="video-title">
+                                Design system: youtube UI with pure CSS
+                            </div>
+                            <div class="video-channel">Design & code</div>
+                            <div class="video-stats">12K views · 4 days ago</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- card 6 -->
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <span>11:02</span>
+                        <i class="fas fa-terminal" style="font-size:2rem; color:rgba(255,255,255,0.7);"></i>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar">J</div>
+                        <div class="video-details">
+                            <div class="video-title">
+                                No JS? no problem – static interaction tricks
+                            </div>
+                            <div class="video-channel">Javascript (just style)</div>
+                            <div class="video-stats">45K views · 8 hours ago</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- card 7 -->
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <span>7:48</span>
+                        <i class="fas fa-mobile-alt" style="font-size:2rem; color:rgba(255,255,255,0.7);"></i>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar">R</div>
+                        <div class="video-details">
+                            <div class="video-title">
+                                Responsive clone without media queries? almost
+                            </div>
+                            <div class="video-channel">Responsive dude</div>
+                            <div class="video-stats">98K views · 1 day ago</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- card 8 -->
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <span>13:30</span>
+                        <i class="fas fa-youtube" style="font-size:2rem; color:rgba(255,255,255,0.7);"></i>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar">Y</div>
+                        <div class="video-details">
+                            <div class="video-title">
+                                YouTube Redesign concept (static only)
+                            </div>
+                            <div class="video-channel">UI lab</div>
+                            <div class="video-stats">1.4M views · 12 days ago</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- card 9 extra (to fill) -->
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <span>9:15</span>
+                        <i class="fas fa-css3-alt" style="font-size:2rem; color:rgba(255,255,255,0.7);"></i>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar">A</div>
+                        <div class="video-details">
+                            <div class="video-title">
+                                Advanced selectors & sidebar styling 
+                            </div>
+                            <div class="video-channel">CSS wizard</div>
+                            <div class="video-stats">34K views · 6 days ago</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- card 10 -->
+                <div class="video-card">
+                    <div class="thumbnail">
+                        <span>18:22</span>
+                        <i class="fas fa-file-code" style="font-size:2rem; color:rgba(255,255,255,0.7);"></i>
+                    </div>
+                    <div class="video-info">
+                        <div class="channel-avatar">H</div>
+                        <div class="video-details">
+                            <div class="video-title">
+                                How to plan a static clone – folder free!
+                            </div>
+                            <div class="video-channel">HTML fundamentals</div>
+                            <div class="video-stats">5.7K views · 2 hours ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- subtle static hint -->
+            <div style="margin-top: 40px; text-align: center; font-size: 0.75rem; color: #aaa; border-top: 1px solid #ddd; padding-top: 16px;">
+                ⚡ purely static YouTube practice clone · ready for GitHub hosting ⚡
+            </div>
+        </main>
+    </div>
+</body>
+</html>
